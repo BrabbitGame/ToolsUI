@@ -1,0 +1,34 @@
+{
+  "name": "com.brabbit.toolsui",
+  "displayName": "Tools UI",
+  "version": "1.0.0",
+  "unity": "2018.1",
+  "description": "UI Tools that expand functionality",
+  "keywords": [
+    "UI",
+    "Tools"
+  ],
+  "author": {
+    "name": "Brabbit",
+    "email": "brabbitgame@gmail.com",
+    "url": ""
+  },
+  "category": "UI",
+  "dependencies": {
+    "com.unity.ugui": "1.0.0"
+  },
+  "type": "tool",
+  "samples": [
+    {
+      "displayName": "Sample",
+      "description": "Sample for Tools UI",
+      "path": "Samples/All Saples" 
+    }
+ ],
+  "repository": {
+    "url": "https://github.com/BrabbitGame/ToolsUI.git",
+    "type": "git"
+  }
+}
+
+
