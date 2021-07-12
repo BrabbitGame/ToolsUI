@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using System.Diagnostics;
 
 namespace UnityEngine.UI {
     [AddComponentMenu("UI/Tools UI/Toggle Group Plus", 1)]
@@ -21,10 +22,18 @@ namespace UnityEngine.UI {
         /// </summary>
         public class ToggleGroupEvent : UnityEvent<TogglePlus> { }
 
+        [Serializable]
+        /// <summary>
+        /// UnityEvent callback for when a toggle is toggled, send all toggles.
+        /// </summary>
+        public class TogglesGroupEvent : UnityEvent<List<TogglePlus>> { }
+
         [SerializeField] private bool m_AllowSwitchOff = false;
         [SerializeField] private bool m_AllowInteractableOff = false;
 
         public ToggleGroupEvent onToggleIsOn = new ToggleGroupEvent();
+        public TogglesGroupEvent onTogglesIsOn = new TogglesGroupEvent();
+
         /// <summary>
         /// Is it allowed that no toggle is switched on?
         /// </summary>
@@ -84,6 +93,8 @@ namespace UnityEngine.UI {
                     m_Toggles[i].interactable = true;
                 }
             }
+
+            onTogglesIsOn?.Invoke(m_Toggles);
         }
 
         /// <summary>
@@ -132,7 +143,10 @@ namespace UnityEngine.UI {
                     toggle.isOn = false;
                     toggle.interactable = true;
                 }
+
+                onTogglesIsOn?.Invoke(m_Toggles);
             }
+
         }
 
         /// <summary>
