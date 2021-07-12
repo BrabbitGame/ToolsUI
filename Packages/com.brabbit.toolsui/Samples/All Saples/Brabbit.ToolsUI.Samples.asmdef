@@ -2,7 +2,8 @@
     "name": "Brabbit.ToolsUI.Samples",
     "rootNamespace": "",
     "references": [
-        "Brabbit.ToolsUI"
+        "Brabbit.ToolsUI",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -14,6 +14,7 @@ namespace UnityEditor.UI {
         SerializedProperty m_GraphicProperty;
         SerializedProperty m_GroupProperty;
         SerializedProperty m_IsOnProperty;
+        SerializedProperty m_IdProperty;
 
         protected override void OnEnable() {
             base.OnEnable();
@@ -23,6 +24,7 @@ namespace UnityEditor.UI {
             m_GroupProperty = serializedObject.FindProperty("m_Group");
             m_IsOnProperty = serializedObject.FindProperty("m_IsOn");
             m_OnValueChangedProperty = serializedObject.FindProperty("onValueChanged");
+            m_IdProperty = serializedObject.FindProperty("m_id");
         }
 
         public override void OnInspectorGUI() {
@@ -32,6 +34,7 @@ namespace UnityEditor.UI {
             serializedObject.Update();
             TogglePlus toggle = serializedObject.targetObject as TogglePlus;
             EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(m_IdProperty);
             EditorGUILayout.PropertyField(m_IsOnProperty);
             if (EditorGUI.EndChangeCheck()) {
                 EditorSceneManager.MarkSceneDirty(toggle.gameObject.scene);

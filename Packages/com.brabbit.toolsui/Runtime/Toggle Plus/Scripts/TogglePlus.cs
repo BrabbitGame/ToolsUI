@@ -47,6 +47,10 @@ namespace UnityEngine.UI {
         [SerializeField]
         private ToggleGroupPlus m_Group;
 
+        [SerializeField]
+        private int m_id = 0;
+        public int Id { get => m_id; }
+
         /// <summary>
         /// Group the toggle belongs to.
         /// </summary>
