@@ -59,7 +59,6 @@ namespace ToolsUI {
         }
 
         private void Update() {
-            Debug.Log("Update");
             if (actualState == WaitingState.Waiting)
                 image_Clessidre.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
         }
