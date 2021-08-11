@@ -41,7 +41,7 @@ namespace Sample {
                 .Instantiate(dialogPrefab)
                 .IsAutoDestroy(true)        // if not declared is the default
                 .SetDialogType(DialogType.TwoButtons)
-                .SetTitle("Titel.......")
+                .SetTitle("Title.......")
                 .SetMessage("Message.\nQuestion ?")
                 .SetButtonText("Yes :)", "No")
                 .SetButtonColor(PaletteColor.Green, PaletteColor.Red)

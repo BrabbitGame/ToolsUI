@@ -24,7 +24,7 @@ namespace ToolsUI {
     }
 
     public class Dialog {
-        public bool isAutoDestriy = true;
+        public bool isAutoDestroy = true;
         public DialogType dialogType = DialogType.OneButto_Positive;
         public string Title = "Title";
         public string Message = "Message goes here.";
@@ -85,7 +85,7 @@ namespace ToolsUI {
         }
 
         public DialogUI IsAutoDestroy(bool destroyWhenClose) {
-            dialog.isAutoDestriy = destroyWhenClose;
+            dialog.isAutoDestroy = destroyWhenClose;
             return Instance;
         }
 
@@ -193,7 +193,7 @@ namespace ToolsUI {
             if (dialogsQueue.Count != 0)
                 ShowNextDialog();
 
-            if(tempDialog.isAutoDestriy) {
+            if(tempDialog.isAutoDestroy) {
                 Destroy(this.gameObject);
             }
         }
