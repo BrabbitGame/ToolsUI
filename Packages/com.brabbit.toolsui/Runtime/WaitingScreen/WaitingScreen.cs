@@ -7,69 +7,54 @@ namespace ToolsUI {
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(CanvasScaler))]
     [RequireComponent(typeof(GraphicRaycaster))]
-    [RequireComponent(typeof(CanvasGroup))]
-
-    [System.Serializable]
-    public class RetryEvent : UnityEvent{};
 
     public class WaitingScreen : MonoBehaviour {
         [SerializeField] private WaitingScreenLink waitingScreenLink = null;
-
         [SerializeField] private GameObject panel_Waiting = null;
         [SerializeField] private GameObject panel_Retry = null;
         [SerializeField] private GameObject image_Clessidre = null;
-        [SerializeField] private float rotationSpeed = -90;
+        [SerializeField] private float rotationSpeed = 120;
 
-        public RetryEvent retry;
+        [HideInInspector] public UnityAction retryActyon = null;
 
-
-        private WaitingState actualState = WaitingState.NotWaiting;
+        private WaitingState state = WaitingState.NotWaiting;
 
         private void Awake() {
-            gameObject.SetActive(true);
-            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-            canvasGroup.alpha = 1.0f;
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;   
+            transform.SetAsLastSibling();
         }
+
         private void OnEnable() {
-            waitingScreenLink.waitingScreenState_Event.AddListener(OnCall_StateChanged);
+            waitingScreenLink.waitingScreenState_Event.AddListener(OnStateChanged);
         }
 
         private void OnDisable() {
-            waitingScreenLink.waitingScreenState_Event.RemoveListener(OnCall_StateChanged); 
+            waitingScreenLink.waitingScreenState_Event.RemoveListener(OnStateChanged); 
         }
 
-        private void OnCall_StateChanged(WaitingState waitingState){
-            switch (waitingState)
+        private void OnStateChanged(WaitingState state){
+            switch (state)
             {
                 case WaitingState.Waiting:
                     Waiting();
                 break;
                 case WaitingState.NotWaiting:
-                    NotWaiting();
+                    GameObject.Destroy(gameObject);
                 break;
                 case WaitingState.Retry:
                     Retry();
                 break;
                 
                 default:
-                    Debug.LogError($"unexpected switch case: {waitingState}");
+                    Debug.LogError($"unexpected switch case: {state}");
                 break;
             }
 
-            actualState = waitingState;
+            this.state = state;
         }
 
         private void Waiting(){
-            gameObject.SetActive(true);
             panel_Waiting.SetActive(true);
             panel_Retry.SetActive(false);
-        }
-
-        public void NotWaiting(){
-            GameObject.Destroy(this);
-            // gameObject.SetActive(false); 
         }
 
         public void Retry(){
@@ -78,12 +63,13 @@ namespace ToolsUI {
         }
 
         private void Update() {
-            if (actualState == WaitingState.Waiting)
+            if (state == WaitingState.Waiting)
                 image_Clessidre.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
         }
 
         public void OnClick_Retry() {
-            retry?.Invoke();
+            OnStateChanged( WaitingState.Waiting );
+            retryActyon?.Invoke();
         }
     }
 }
