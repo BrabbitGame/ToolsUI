@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
-using System.Diagnostics;
 
 namespace UnityEngine.UI {
     [AddComponentMenu("UI/Tools UI/Toggle Group Plus", 1)]
