@@ -4,30 +4,35 @@ using ToolsUI;
 
 namespace Sample {
 
-    [System.Serializable]
-    public class WaitingEvent : UnityEvent{};
-    [System.Serializable]
-    public class NotWaitingEvent : UnityEvent{};
-    [System.Serializable]
-    public class RetryEvent : UnityEvent{};
-
+    // [System.Serializable]
+    // public class WaitingEvent : UnityEvent{};
+    // [System.Serializable]
+    // public class NotWaitingEvent : UnityEvent{};
+    // [System.Serializable]
+    // public class RetryEvent : UnityEvent{};
 
     public class WaitingScreenDemo : MonoBehaviour {
+        [SerializeField] private WaitingScreen waitingScreenPrefab = null;
+        [SerializeField] private WaitingScreenLink waitingScreenLink = null;
 
-        public WaitingEvent waiting;
-        public NotWaitingEvent notWaiting;
-        public RetryEvent retry;
+        // public WaitingEvent waiting;
+        // public NotWaitingEvent notWaiting;
+        // public RetryEvent retry;
+
+        // private void Start() {
+        //     var waitingScreen = waitingScreenLink.Instantiate(waitingScreenPrefab) as WaitingScreen; 
+        // }
         
         public void OnClick_Waiting(){
-            waiting?.Invoke();
+            waitingScreenLink.Waiting(waitingScreenPrefab);
         }
 
         public void OnClick_NotWaiting(){
-            notWaiting?.Invoke();
+            waitingScreenLink.NotWaiting();
         }
 
         public void OnClick_Retry(){
-            retry?.Invoke();
+            waitingScreenLink.Retry();
         }
 
     }

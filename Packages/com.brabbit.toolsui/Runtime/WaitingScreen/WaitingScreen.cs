@@ -13,6 +13,7 @@ namespace ToolsUI {
     public class RetryEvent : UnityEvent{};
 
     public class WaitingScreen : MonoBehaviour {
+        [SerializeField] private WaitingScreenLink waitingScreenLink = null;
 
         [SerializeField] private GameObject panel_Waiting = null;
         [SerializeField] private GameObject panel_Retry = null;
@@ -21,11 +22,7 @@ namespace ToolsUI {
 
         public RetryEvent retry;
 
-        private enum WaitingState {
-            Waiting,
-            NotWaiting,
-            Retry
-        }
+
         private WaitingState actualState = WaitingState.NotWaiting;
 
         private void Awake() {
@@ -35,25 +32,47 @@ namespace ToolsUI {
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;   
         }
+        private void OnEnable() {
+            waitingScreenLink.waitingScreenState_Event.AddListener(OnCall_StateChanged);
+        }
 
+        private void OnDisable() {
+            waitingScreenLink.waitingScreenState_Event.RemoveListener(OnCall_StateChanged); 
+        }
 
-        public void OnWaiting(){
-            actualState = WaitingState.Waiting;
+        private void OnCall_StateChanged(WaitingState waitingState){
+            switch (waitingState)
+            {
+                case WaitingState.Waiting:
+                    Waiting();
+                break;
+                case WaitingState.NotWaiting:
+                    NotWaiting();
+                break;
+                case WaitingState.Retry:
+                    Retry();
+                break;
+                
+                default:
+                    Debug.LogError($"unexpected switch case: {waitingState}");
+                break;
+            }
 
+            actualState = waitingState;
+        }
+
+        private void Waiting(){
             gameObject.SetActive(true);
             panel_Waiting.SetActive(true);
             panel_Retry.SetActive(false);
         }
 
-        public void OnNotWaiting(){
-            actualState = WaitingState.NotWaiting;
-
-            gameObject.SetActive(false); 
+        public void NotWaiting(){
+            GameObject.Destroy(this);
+            // gameObject.SetActive(false); 
         }
 
-        public void OnRetry(){
-            actualState = WaitingState.Retry;
-
+        public void Retry(){
             panel_Waiting.SetActive(false);
             panel_Retry.SetActive(true);   
         }
@@ -67,6 +86,4 @@ namespace ToolsUI {
             retry?.Invoke();
         }
     }
-
-
 }
