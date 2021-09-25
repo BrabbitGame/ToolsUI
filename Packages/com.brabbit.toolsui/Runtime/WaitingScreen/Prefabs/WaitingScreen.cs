@@ -26,6 +26,7 @@ namespace ToolsUI {
         private bool isClessidreTurning = false;
 
         private void Awake() {
+            GameObject.DontDestroyOnLoad(gameObject);
             transform.SetAsLastSibling();
         }
 
