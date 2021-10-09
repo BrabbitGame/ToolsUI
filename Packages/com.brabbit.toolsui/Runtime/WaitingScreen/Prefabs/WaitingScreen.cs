@@ -3,19 +3,22 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 
-namespace ToolsUI {
+namespace ToolsUI 
+{
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(CanvasScaler))]
     [RequireComponent(typeof(GraphicRaycaster))]
 
-    public class WaitingScreen : MonoBehaviour {
+    public class WaitingScreen : MonoBehaviour 
+    {
         [SerializeField] private WaitingScreenLink waitingScreenLink = null;
         [Space]
         [SerializeField] private GameObject panel_Waiting = null;
         [SerializeField] private GameObject panel_Retry = null;
         [SerializeField] private Button button_Abort = null;
         [SerializeField] private TextMeshProUGUI text_Title = null;
+        [SerializeField] private TextMeshProUGUI text_SubTitle = null;
         [Space]
         [SerializeField] private GameObject image_Clessidre = null;
         [SerializeField] private float rotationSpeed = 120;
@@ -32,12 +35,14 @@ namespace ToolsUI {
 
         private void OnEnable() {
             waitingScreenLink.waitingScreenState_Event.AddListener(OnStateChanged);
-            waitingScreenLink.waitingScreenSetTextTitle_Event.AddListener(OnSetTextTitle);
+            waitingScreenLink.waitingScreenSetTextTitle_Event.AddListener(OnSetTitle);
+            waitingScreenLink.waitingScreenSetTextSubTitle_Event.AddListener(OnSetSubTitle);
         }
 
         private void OnDisable() {
             waitingScreenLink.waitingScreenState_Event.RemoveListener(OnStateChanged); 
-            waitingScreenLink.waitingScreenSetTextTitle_Event.RemoveListener(OnSetTextTitle);
+            waitingScreenLink.waitingScreenSetTextTitle_Event.RemoveListener(OnSetTitle);
+            waitingScreenLink.waitingScreenSetTextSubTitle_Event.RemoveListener(OnSetSubTitle);
         }
 
         private void OnStateChanged(WaitingState state){
@@ -59,10 +64,14 @@ namespace ToolsUI {
             }
         }
 
-        private void OnSetTextTitle( string title ){
+        private void OnSetTitle( string title ){
             text_Title.text = title;
         }
 
+        private void OnSetSubTitle( string subTitle ){
+            text_SubTitle.text = subTitle;
+        }
+        
         private void Waiting(){
             panel_Waiting.SetActive(true);
             button_Abort.gameObject.SetActive(abortActyon == null ? false : true);
