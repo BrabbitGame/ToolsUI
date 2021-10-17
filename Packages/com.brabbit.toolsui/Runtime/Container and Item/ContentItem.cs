@@ -22,61 +22,92 @@ namespace UnityEngine.UI {
             items.Clear();
         }
 
-        public Item Add(string id) {
-            if(!PrefabValidate()) return null;
+        public Item Add(string id, int? index) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
+
             Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index));
             items.Add(id, item);
             return item;
         }
 
-        public Item Add<T>(string id, T val) {
-            if(!PrefabValidate()) return null;
-            Item item = Instantiate(itemPrefab, rectTransform) as Item;
-            item.Initialize(val);
+        public Item Add<T>(string id, int? index, T val) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
 
+            Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index), val);
             items.Add(id, item);
             return item;
         }
 
-        public Item Add<T, T1>(string id, T val, T1 val1) {
-            if(!PrefabValidate()) return null;
-            Item item = Instantiate(itemPrefab, rectTransform) as Item;
-            item.Initialize(val, val1);
+        public Item Add<T, T1>(string id, int? index, T val, T1 val1) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
 
+            Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index), val, val1);
             items.Add(id, item);
             return item;
         }
 
-        public Item Add<T, T1, T2>(string id, T val, T1 val1, T2 val2) {
-            if(!PrefabValidate()) return null;
-            Item item = Instantiate(itemPrefab, rectTransform) as Item;
-            item.Initialize(val, val1, val2);
+        public Item Add<T, T1, T2>(string id, int? index, T val, T1 val1, T2 val2) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
 
+            Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index), val, val1, val2);
             items.Add(id, item);
             return item;
         }
 
-        public Item Add<T, T1, T2, T3>(string id, T val, T1 val1, T2 val2, T3 val3) {
-            if(!PrefabValidate()) return null;
-            Item item = Instantiate(itemPrefab, rectTransform) as Item;
-            item.Initialize(val, val1, val2, val3);
+        public Item Add<T, T1, T2, T3>(string id, int? index, T val, T1 val1, T2 val2, T3 val3) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
 
+            Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index), val, val1, val2, val3);
             items.Add(id, item);
             return item;
         }
 
-        public Item Add<T, T1, T2, T3, T4>(string id, T val, T1 val1, T2 val2, T3 val3, T4 val4) {
-            if(!PrefabValidate()) return null;
-            Item item = Instantiate(itemPrefab, rectTransform) as Item;
-            item.Initialize(val, val1, val2, val3, val4);
+        public Item Add<T, T1, T2, T3, T4>(string id, int? index, T val, T1 val1, T2 val2, T3 val3, T4 val4) {
+            if( !PrefabValidate() || items.ContainsKey(id) ) return null;
 
+            Item item = Instantiate(itemPrefab, rectTransform) as Item;
+            item.Initialize(ConvertNullableInt(index), val, val1, val2, val3, val4);
             items.Add(id,item);
             return item;
         }
 
+        private int ConvertNullableInt( int? index ){
+            if(index == null) 
+                return items.Count;
+            else
+                return index.Value;
+        }
+
+        public Item Get( string id ){
+            return items.SingleOrDefault( x=> x.Key == id ).Value;
+        }
+
+        public Item Get( int index ){
+            return items.ElementAtOrDefault( index ).Value;
+        }
+
+        public Item GetLast(){
+            return items.ElementAtOrDefault( items.Count-1 ).Value;
+        }
+
+        public void OrderByIndex(){
+            items = items.OrderBy( r=> r.Value.Index ).ToDictionary( x=> x.Key, y=> y.Value );
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                items.ElementAt(i).Value.transform.SetSiblingIndex(i);
+            }
+        }
+
         public void Destroy(int index ) {
-            if (index > 0 && index < items.Count) {
-                var dictRecord = items.ElementAt(index);
+            var dictRecord = items.ElementAtOrDefault(index);
+
+            if( !string.IsNullOrEmpty(dictRecord.Key) || dictRecord.Value != null ){
                 Destroy(dictRecord.Value.gameObject);
                 items.Remove(dictRecord.Key);
             }
