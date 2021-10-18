@@ -1,7 +1,7 @@
 {
   "name": "com.brabbit.toolsui",
   "displayName": "Tools UI",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "unity": "2018.1",
   "description": "UI Tools that expand functionality",
   "keywords": [
@@ -22,13 +22,11 @@
     {
       "displayName": "Sample",
       "description": "Sample for Tools UI",
-      "path": "Samples/All Saples" 
+      "path": "Samples/All Saples"
     }
- ],
+  ],
   "repository": {
     "url": "https://github.com/BrabbitGame/ToolsUI.git",
     "type": "git"
   }
 }
-
-
