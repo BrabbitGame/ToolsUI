@@ -1,7 +1,7 @@
 {
   "name": "com.brabbit.toolsui",
   "displayName": "Tools UI",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "unity": "2018.1",
   "description": "UI Tools that expand functionality",
   "keywords": [
