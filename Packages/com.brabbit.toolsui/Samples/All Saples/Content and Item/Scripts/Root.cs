@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,9 +23,9 @@ namespace Sample {
 
         public void OnClick_UpdateItem(){
             Item itemLink = contentItem.Get(0);
-            int i = Convert.ToInt32(itemLink.val);
+            int i = Convert.ToInt32(itemLink.Val);
             i++;
-            itemLink.val = i;
+            itemLink.Val = i;
 
             itemLink.Refresh();
         }
