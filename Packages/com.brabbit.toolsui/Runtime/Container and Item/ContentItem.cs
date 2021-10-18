@@ -11,6 +11,7 @@ namespace UnityEngine.UI {
         public int Count { get => items.Count; }
         public Dictionary<string, Item> Items { get => items; }
 
+        [SerializeField] private bool destryChildrensOnAwake = true;
         [SerializeField] private Item itemPrefab = null;
 
         private RectTransform rectTransform = null;
@@ -19,7 +20,9 @@ namespace UnityEngine.UI {
         private void Awake() {
             rectTransform = GetComponent<RectTransform>();
             items = new Dictionary<string, Item>();
-            items.Clear();
+
+            if(destryChildrensOnAwake)
+                DestryChildrens();
         }
 
         public Item Add(string id, int? index) {
@@ -136,12 +139,12 @@ namespace UnityEngine.UI {
             items.Clear();
         }
 
-// todo: usare in awake, ed aggiungere un flag che abilita la funzionalità
-        public void DestryChildrens() {
-            int index = rectTransform.childCount - 1;
+        private void DestryChildrens() {
+            int deletable = rectTransform.childCount;
+            if(deletable <= 0) return;
 
-            for (int i = index; i >= index; i--) {
-                Transform childTransform = rectTransform.GetChild(i);
+            for (int i = deletable; i > 0; i--) {
+                Transform childTransform = rectTransform.GetChild(i-1);
                 Destroy(childTransform.gameObject);
             }
         }

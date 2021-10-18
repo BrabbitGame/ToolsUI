@@ -16,13 +16,13 @@ namespace Sample {
         }
 
         public override void Refresh() {
-            int i = Convert.ToInt32(val);
+            int i = Convert.ToInt32(Val);
             
             //string str = Convert.ToString(val1);
-            string str = val1 as string;
+            string str = Val1 as string;
 
             //ToElement toElement = Convert.ChangeType(val2, val2.GetType()) as ToElement;
-            ToElement toElement = val2 as ToElement;
+            ToElement toElement = Val2 as ToElement;
 
             txt.text = $"{i} - {str} - {toElement.a}/{toElement.b}";
         }
