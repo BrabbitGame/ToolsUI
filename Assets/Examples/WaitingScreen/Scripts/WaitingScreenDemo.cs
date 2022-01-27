@@ -5,12 +5,11 @@ namespace Sample
 {
     public class WaitingScreenDemo : MonoBehaviour
     {
-        [SerializeField] private WaitingScreen waitingScreenPrefab;
         [SerializeField] private WaitingScreenLink waitingScreenLink;
 
         public void OnClick_Show()
         {
-            waitingScreenLink.Show(waitingScreenPrefab, "TEST TITLE", "test sub title", OnCall_Abort, OnCall_Retry);
+            waitingScreenLink.Show("TEST TITLE", "test sub title", OnCall_Abort, OnCall_Retry);
             // waitingScreenLink.Waiting(waitingScreenPrefab, "TEST TITLE", "test sub title", null, OnCall_Retry); // without abort button
             // waitingScreenLink.Waiting(waitingScreenPrefab, "TEST TITLE", "test sub title", OnCall_Abort); // without retry panel
         }
