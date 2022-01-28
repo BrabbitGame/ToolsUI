@@ -1,6 +1,7 @@
 using UnityEngine;
 using ToolsUI;
 
+// ReSharper disable once CheckNamespace
 namespace Sample
 {
     public class WaitingScreenDemo : MonoBehaviour
@@ -9,9 +10,17 @@ namespace Sample
 
         public void OnClick_Show()
         {
-            waitingScreenLink.Show("TEST TITLE", "test sub title", OnCall_Abort, OnCall_Retry);
-            // waitingScreenLink.Waiting(waitingScreenPrefab, "TEST TITLE", "test sub title", null, OnCall_Retry); // without abort button
-            // waitingScreenLink.Waiting(waitingScreenPrefab, "TEST TITLE", "test sub title", OnCall_Abort); // without retry panel
+            waitingScreenLink.Show("TITLE 1", "with abort and retry buttons", OnCall_Abort, OnCall_Retry);
+        }
+        
+        public void OnClick_Show_1()
+        {
+            waitingScreenLink.Show("TITLE 2", "without abort button", null, OnCall_Retry);
+        }
+        
+        public void OnClick_Show_2()
+        {
+            waitingScreenLink.Show("TITLE 3", "without retry button", OnCall_Abort);
         }
 
         public void OnClick_NotWaiting()
@@ -41,12 +50,12 @@ namespace Sample
 
         private void OnCall_Abort()
         {
-            Debug.Log("OnCall_Abort");
+            Debug.Log("OnCall_Abort", this);
         }
 
         private void OnCall_Retry()
         {
-            Debug.Log("OnCall_Retry");
+            Debug.Log("OnCall_Retry", this);
         }
     }
 }

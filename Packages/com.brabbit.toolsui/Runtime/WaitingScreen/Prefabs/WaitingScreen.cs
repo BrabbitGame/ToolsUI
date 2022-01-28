@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using TMPro;
 
+// ReSharper disable once CheckNamespace
 namespace ToolsUI
 {
     [RequireComponent(typeof(RectTransform))]
@@ -22,29 +23,29 @@ namespace ToolsUI
         [SerializeField] private GameObject imageHourglass;
         [SerializeField] [Range(0, 200)] private float rotationSpeed = 120;
 
-        public UnityAction abortAction = null;
-        public UnityAction retryAction = null;
+        public Action AbortAction = null;
+        public Action RetryAction = null;
 
         private bool _isHourglassTurning;
 
         private void Awake()
         {
-            GameObject.DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
             transform.SetAsLastSibling();
         }
 
         private void OnEnable()
         {
-            waitingScreenLink.waitingScreenState_Event.AddListener(OnStateChanged);
-            waitingScreenLink.waitingScreenSetTextTitle_Event.AddListener(OnSetTitle);
-            waitingScreenLink.waitingScreenSetTextSubTitle_Event.AddListener(OnSetSubTitle);
+            waitingScreenLink.WaitingScreenStateChangedAction += OnStateChanged;
+            waitingScreenLink.WaitingScreenSetTitleAction += OnSetTitle;
+            waitingScreenLink.WaitingScreenSetSubTitleAction += OnSetSubTitle;
         }
 
         private void OnDisable()
         {
-            waitingScreenLink.waitingScreenState_Event.RemoveListener(OnStateChanged);
-            waitingScreenLink.waitingScreenSetTextTitle_Event.RemoveListener(OnSetTitle);
-            waitingScreenLink.waitingScreenSetTextSubTitle_Event.RemoveListener(OnSetSubTitle);
+            waitingScreenLink.WaitingScreenStateChangedAction -= OnStateChanged;
+            waitingScreenLink.WaitingScreenSetTitleAction -= OnSetTitle;
+            waitingScreenLink.WaitingScreenSetSubTitleAction -= OnSetSubTitle;
         }
 
         private void OnStateChanged(WaitingState state)
@@ -62,7 +63,7 @@ namespace ToolsUI
                     break;
 
                 default:
-                    Debug.LogError($"unexpected switch case: {state}");
+                    Debug.LogError($"unexpected switch case: {state}", this);
                     break;
             }
         }
@@ -80,7 +81,7 @@ namespace ToolsUI
         private void Waiting()
         {
             panelWaiting.SetActive(true);
-            buttonAbort.gameObject.SetActive(abortAction != null);
+            buttonAbort.gameObject.SetActive(AbortAction != null);
             panelRetry.SetActive(false);
 
             _isHourglassTurning = true;
@@ -88,7 +89,7 @@ namespace ToolsUI
 
         private void Retry()
         {
-            if (retryAction != null)
+            if (RetryAction != null)
             {
                 panelWaiting.SetActive(false);
                 panelRetry.SetActive(true);
@@ -97,7 +98,7 @@ namespace ToolsUI
             }
             else
             {
-                Debug.LogError("Try to show retry panel without retry callback button click");
+                Debug.LogWarning("Try to show retry panel without retry callback button click", this);
             }
         }
 
@@ -109,13 +110,13 @@ namespace ToolsUI
 
         public void OnClick_Abort()
         {
-            abortAction?.Invoke();
+            AbortAction?.Invoke();
             OnStateChanged(WaitingState.NotWaiting);
         }
 
         public void OnClick_Retry()
         {
-            retryAction?.Invoke();
+            RetryAction?.Invoke();
             OnStateChanged(WaitingState.Waiting);
         }
     }
