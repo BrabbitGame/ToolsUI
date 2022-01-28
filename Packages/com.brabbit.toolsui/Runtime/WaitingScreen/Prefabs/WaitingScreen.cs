@@ -1,109 +1,123 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using TMPro;
 
-namespace ToolsUI 
+// ReSharper disable once CheckNamespace
+namespace ToolsUI
 {
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(CanvasScaler))]
     [RequireComponent(typeof(GraphicRaycaster))]
-
-    public class WaitingScreen : MonoBehaviour 
+    public class WaitingScreen : MonoBehaviour
     {
-        [SerializeField] private WaitingScreenLink waitingScreenLink = null;
-        [Space]
-        [SerializeField] private GameObject panel_Waiting = null;
-        [SerializeField] private GameObject panel_Retry = null;
-        [SerializeField] private Button button_Abort = null;
-        [SerializeField] private TextMeshProUGUI text_Title = null;
-        [SerializeField] private TextMeshProUGUI text_SubTitle = null;
-        [Space]
-        [SerializeField] private GameObject image_Clessidre = null;
-        [SerializeField] private float rotationSpeed = 120;
+        [SerializeField] private WaitingScreenLink waitingScreenLink;
+        [Space] 
+        [SerializeField] private GameObject panelWaiting;
+        [SerializeField] private GameObject panelRetry;
+        [SerializeField] private Button buttonAbort;
+        [SerializeField] private TextMeshProUGUI textTitle;
+        [SerializeField] private TextMeshProUGUI textSubTitle;
+        [Space] 
+        [SerializeField] private GameObject imageHourglass;
+        [SerializeField] [Range(0, 200)] private float rotationSpeed = 120;
 
-        [HideInInspector] public UnityAction abortActyon = null;
-        [HideInInspector] public UnityAction retryActyon = null;
+        public Action AbortAction = null;
+        public Action RetryAction = null;
 
-        private bool isClessidreTurning = false;
+        private bool _isHourglassTurning;
 
-        private void Awake() {
-            GameObject.DontDestroyOnLoad(gameObject);
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
             transform.SetAsLastSibling();
         }
 
-        private void OnEnable() {
-            waitingScreenLink.waitingScreenState_Event.AddListener(OnStateChanged);
-            waitingScreenLink.waitingScreenSetTextTitle_Event.AddListener(OnSetTitle);
-            waitingScreenLink.waitingScreenSetTextSubTitle_Event.AddListener(OnSetSubTitle);
+        private void OnEnable()
+        {
+            waitingScreenLink.WaitingScreenStateChangedAction += OnStateChanged;
+            waitingScreenLink.WaitingScreenSetTitleAction += OnSetTitle;
+            waitingScreenLink.WaitingScreenSetSubTitleAction += OnSetSubTitle;
         }
 
-        private void OnDisable() {
-            waitingScreenLink.waitingScreenState_Event.RemoveListener(OnStateChanged); 
-            waitingScreenLink.waitingScreenSetTextTitle_Event.RemoveListener(OnSetTitle);
-            waitingScreenLink.waitingScreenSetTextSubTitle_Event.RemoveListener(OnSetSubTitle);
+        private void OnDisable()
+        {
+            waitingScreenLink.WaitingScreenStateChangedAction -= OnStateChanged;
+            waitingScreenLink.WaitingScreenSetTitleAction -= OnSetTitle;
+            waitingScreenLink.WaitingScreenSetSubTitleAction -= OnSetSubTitle;
         }
 
-        private void OnStateChanged(WaitingState state){
+        private void OnStateChanged(WaitingState state)
+        {
             switch (state)
             {
                 case WaitingState.Waiting:
                     Waiting();
-                break;
+                    break;
                 case WaitingState.NotWaiting:
-                    GameObject.Destroy(gameObject);
-                break;
+                    Destroy(gameObject);
+                    break;
                 case WaitingState.Retry:
                     Retry();
-                break;
-                
+                    break;
+
                 default:
-                    Debug.LogError($"unexpected switch case: {state}");
-                break;
+                    Debug.LogError($"unexpected switch case: {state}", this);
+                    break;
             }
         }
 
-        private void OnSetTitle( string title ){
-            text_Title.text = title;
+        private void OnSetTitle(string title)
+        {
+            textTitle.text = title;
         }
 
-        private void OnSetSubTitle( string subTitle ){
-            text_SubTitle.text = subTitle;
-        }
-        
-        private void Waiting(){
-            panel_Waiting.SetActive(true);
-            button_Abort.gameObject.SetActive(abortActyon == null ? false : true);
-            panel_Retry.SetActive(false);
-
-            isClessidreTurning = true;
+        private void OnSetSubTitle(string subTitle)
+        {
+            textSubTitle.text = subTitle;
         }
 
-        public void Retry(){
-            if(retryActyon != null){
-                panel_Waiting.SetActive(false);
-                panel_Retry.SetActive(true); 
+        private void Waiting()
+        {
+            panelWaiting.SetActive(true);
+            buttonAbort.gameObject.SetActive(AbortAction != null);
+            panelRetry.SetActive(false);
 
-                isClessidreTurning = false; 
-            } else {
-                Debug.LogError("Try to show retry pannel without retry callback button click");
+            _isHourglassTurning = true;
+        }
+
+        private void Retry()
+        {
+            if (RetryAction != null)
+            {
+                panelWaiting.SetActive(false);
+                panelRetry.SetActive(true);
+
+                _isHourglassTurning = false;
+            }
+            else
+            {
+                Debug.LogWarning("Try to show retry panel without retry callback button click", this);
             }
         }
 
-        private void Update() {
-            if (isClessidreTurning)
-                image_Clessidre.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+        private void Update()
+        {
+            if (_isHourglassTurning)
+                imageHourglass.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
         }
 
-        public void OnClick_Abort() {
-            abortActyon?.Invoke();
-            OnStateChanged( WaitingState.NotWaiting );
+        public void OnClick_Abort()
+        {
+            AbortAction?.Invoke();
+            OnStateChanged(WaitingState.NotWaiting);
         }
 
-        public void OnClick_Retry() {
-            retryActyon?.Invoke();
-            OnStateChanged( WaitingState.Waiting );  
+        public void OnClick_Retry()
+        {
+            RetryAction?.Invoke();
+            OnStateChanged(WaitingState.Waiting);
         }
     }
 }

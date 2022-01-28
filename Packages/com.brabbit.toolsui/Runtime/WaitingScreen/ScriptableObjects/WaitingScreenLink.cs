@@ -1,48 +1,59 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
+// ReSharper disable once CheckNamespace
 namespace ToolsUI
-{    
-    public class WaitingScreenState_Event : UnityEvent<WaitingState>{};
-    public class WaitingScreenSetTextTitle_Event : UnityEvent<string>{};
-    public class WaitingScreenSetTextSubTitle_Event : UnityEvent<string>{};
-    
+{
     [CreateAssetMenu(fileName = "WaitingScreenLink", menuName = "UI/Tools UI/WaitingScreenLink")]
     public class WaitingScreenLink : ScriptableObject
-    {  
-        public WaitingScreenState_Event waitingScreenState_Event = new WaitingScreenState_Event();
-        public WaitingScreenSetTextTitle_Event waitingScreenSetTextTitle_Event = new WaitingScreenSetTextTitle_Event();
-        public WaitingScreenSetTextSubTitle_Event waitingScreenSetTextSubTitle_Event = new WaitingScreenSetTextSubTitle_Event();
-        private WaitingScreen ws = null;
+    {
+        public Action<WaitingState> WaitingScreenStateChangedAction;
+        public Action<string> WaitingScreenSetTitleAction;
+        public Action<string> WaitingScreenSetSubTitleAction;
 
-        public void Show(Object prefab, string title, string subTitle, UnityAction abortActyon = null, UnityAction retryActyon = null ){
-            if(ws != null) return;
+        [SerializeField] private WaitingScreen waitingScreenPrefab;
+        private WaitingScreen _waitingScreen;
 
-            ws = GameObject.Instantiate(prefab) as WaitingScreen;
-            ws.abortActyon = abortActyon;
-            ws.retryActyon = retryActyon;
+        public void Show(string title, string subTitle, Action abortAction = null, Action retryAction = null)
+        {
+            if (_waitingScreen != null) return;
 
-            SetTitle(title);
-            SetSubTitle(subTitle);
-            SetState(WaitingState.Waiting);
+            if (waitingScreenPrefab != null)
+            {
+                _waitingScreen = Instantiate(waitingScreenPrefab);
+                _waitingScreen.AbortAction = abortAction;
+                _waitingScreen.RetryAction = retryAction;
+
+                SetTitle(title);
+                SetSubTitle(subTitle);
+                SetState(WaitingState.Waiting);
+            }
+            else
+            {
+                Debug.LogError($"waitingScreenPrefab not present", this);
+            }
         }
 
-        public void SetState( WaitingState state ){
-            waitingScreenState_Event?.Invoke(state);
-        }   
-
-        public void SetTitle( string title ){
-            if( !string.IsNullOrEmpty(title) )
-                waitingScreenSetTextTitle_Event?.Invoke(title);
+        public void SetState(WaitingState state)
+        {
+            WaitingScreenStateChangedAction?.Invoke(state);
         }
 
-        public void SetSubTitle( string subTitle ){
-            if( !string.IsNullOrEmpty(subTitle) )
-                waitingScreenSetTextSubTitle_Event?.Invoke(subTitle);
+        public void SetTitle(string title)
+        {
+            if (!string.IsNullOrEmpty(title))
+                WaitingScreenSetTitleAction?.Invoke(title);
+        }
+
+        public void SetSubTitle(string subTitle)
+        {
+            if (!string.IsNullOrEmpty(subTitle))
+                WaitingScreenSetSubTitleAction?.Invoke(subTitle);
         }
     }
 
-    public enum WaitingState {
+    public enum WaitingState
+    {
         Waiting,
         NotWaiting,
         Retry
