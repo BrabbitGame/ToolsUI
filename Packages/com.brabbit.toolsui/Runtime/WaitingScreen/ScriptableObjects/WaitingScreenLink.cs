@@ -1,7 +1,5 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Scripting;
 
 namespace ToolsUI
 {

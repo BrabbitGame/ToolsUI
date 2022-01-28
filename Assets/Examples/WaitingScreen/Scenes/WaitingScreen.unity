@@ -593,10 +593,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1040125182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0b94fa0e1f378145af2a033de0cbf22, type: 3}
+  m_Script: {fileID: 11500000, guid: 1948891d2aac1aa44b3b27d53054d1bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitingScreenPrefab: {fileID: 6559384190916719213, guid: 30d1b7dc0ea346f4484041dc308f8820, type: 3}
   waitingScreenLink: {fileID: 11400000, guid: 2b29988885c563742b71183100a0b8b6, type: 2}
 --- !u!114 &1040125185
 MonoBehaviour:
